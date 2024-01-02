@@ -1,0 +1,98 @@
+;====================================================
+; Energy minimization
+;====================================================
+
+;----------------------------------------------------
+; RUN CONTROL & MINIMIZATION
+;----------------------------------------------------
+define                 = -DFLEXIBLE
+integrator             = sd
+nsteps                 = 20000
+emtol                  = 100
+emstep                 = 0.01
+nstcomm                = 100
+
+;----------------------------------------------------
+; OUTPUT CONTROL
+;----------------------------------------------------
+nstxout                = 250        ; save coordinates to .trr every 250 steps
+nstvout                = 0          ; don't save velocities to .trr
+nstfout                = 0          ; don't save forces to .trr
+
+nstxout-compressed     = 500        ; xtc compressed trajectory output every 500 steps
+compressed-x-precision = 1000
+nstlog                 = 500        ; update log file every 500 steps
+nstenergy              = 500        ; save energies every 500 steps
+nstcalcenergy          = 100
+
+;----------------------------------------------------
+; NEIGHBOR SEARCHING
+;----------------------------------------------------
+cutoff-scheme          = Verlet
+ns-type                = grid
+nstlist                = 20
+pbc                    = xyz
+verlet-buffer-tolerance= -1
+rlist                  = 2.5
+
+;----------------------------------------------------
+; BONDS
+;----------------------------------------------------
+constraints            = none
+constraint_algorithm   = Lincs
+
+;----------------------------------------------------
+; ELECTROSTATICS
+;----------------------------------------------------
+coulombtype            = reaction-field
+rcoulomb               = 1.1
+epsilon_r              = 15
+epsilon_rf             = 0
+pme-order              = 6 
+fourierspacing         = 0.10
+ewald-rtol             = 1e-6
+
+;----------------------------------------------------
+; VDW
+;----------------------------------------------------
+vdw-type                = cutoff
+rvdw                    = 1.1
+vdw-modifier            = Potential-shift-verlet
+ewald-rtol-lj           = 1e-3
+lj-pme-comb-rule        = Geometric
+DispCorr                = EnerPres
+
+;----------------------------------------------------
+; TEMPERATURE & PRESSURE COUPL
+;----------------------------------------------------
+Tcoupl              = no
+tc-grps             = system
+tau_t               = 1.0
+ref_t               = 299.15
+Pcoupl              = berendsen
+Pcoupltype          = isotropic
+tau_p               = 4.0
+compressibility     = 3e-4
+ref_p               = 1.0
+gen_vel             = no
+gen_temp            = 299.15
+gen_seed            = 473529
+
+;----------------------------------------------------
+; FREE ENERGY CALCULATIONS
+;----------------------------------------------------
+free-energy              = yes
+couple-moltype           = ligand
+couple-lambda0           = vdw-q
+couple-lambda1           = none
+couple-intramol          = no
+separate-dhdl-file       = yes
+sc-alpha                 = 0.5
+sc-power                 = 1
+sc-sigma		 = 0.3
+init-lambda-state        = 11
+bonded-lambdas           = 0.0 0.01 0.025 0.05 0.075 0.1 0.2 0.35 0.5 0.75 1.0 1.00 1.0 1.00 1.0 1.00 1.0 1.0 1.0 1.0 1.0 1.0 1.00 1.0 1.00 1.0 1.00 1.0 1.00 1.0
+coul-lambdas             = 0.0 0.00 0.000 0.00 0.000 0.0 0.0 0.00 0.0 0.00 0.0 0.25 0.5 0.75 1.0 1.00 1.0 1.0 1.0 1.0 1.0 1.0 1.00 1.0 1.00 1.0 1.00 1.0 1.00 1.0
+vdw-lambdas              = 0.0 0.00 0.000 0.00 0.000 0.0 0.0 0.00 0.0 0.00 0.0 0.00 0.0 0.00 0.0 0.05 0.1 0.2 0.3 0.4 0.5 0.6 0.65 0.7 0.75 0.8 0.85 0.9 0.95 1.0
+nstdhdl                  = 100
+calc-lambda-neighbors    = -1
